@@ -14,113 +14,38 @@
   ></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="text/babel">
-    function MinutesToHours() {
-      const [amount, setAmount] = React.useState();
-      const [inverted, setInverted] = React.useState(false);
-      const onChange = (e) => {
-        setAmount(e.target.valueAsNumber);
-      };
-      const reset = () => setAmount(0);
-      const onFlip = () => {
-        reset();
-        setInverted((current) => !current);
-      };
+    function Btn({ btnTitle, backColor, onClick }) {
+      console.log(btnTitle, " was rendered.");
       return (
-        <div>
-          <h3>Minutes to Hours</h3>
-          <div>
-            <label htmlFor="amount">Minutes</label>
-            <input
-              value={inverted ? amount * 60 : amount}
-              id="minutes"
-              placeholder="Minutes"
-              type="number"
-              onChange={onChange}
-              disabled={inverted}
-            />
-          </div>
-          <div>
-            <label htmlFor="hours">Hours</label>
-            <input
-              value={inverted ? amount : Math.round(amount / 60)}
-              id="hours"
-              placeholder="Hours"
-              type="number"
-              onChange={onChange}
-              disabled={!inverted}
-            />
-          </div>
-          <button onClick={reset}>Reset</button>
-          <button onClick={onFlip}>{inverted ? "Turn back" : "Invert"}</button>
-        </div>
+        <button
+          style={{
+            backgroundColor: backColor,
+            color: "white",
+            padding: "10px 20px",
+            border: 0,
+            borderRadius: 12,
+            fontSize: "14px",
+          }}
+          onClick={onClick}
+        >
+          {btnTitle}
+        </button>
       );
     }
-    function KmToMiles() {
-      const [toValue, setTovalue] = React.useState();
-      const [chge, setChge] = React.useState(false);
-
-      const onChange = (e) => {
-        setTovalue(e.target.valueAsNumber);
-      };
-      const reset = () => {
-        setTovalue(0);
-      };
-      const convertKMtoMiles = () => {
-        reset();
-        setChge(!chge);
-      };
-
-      return (
-        <div>
-          <h3>Km to Miles</h3>
-          <div>
-            <div>
-              <input
-                type="number"
-                placeholder="Kilometer"
-                value={chge ? toValue * 1.609344 : toValue}
-                onChange={onChange}
-                disabled={chge}
-              />
-              <label htmlFor="km">KM</label>
-            </div>
-            <div>
-              <input
-                type="number"
-                placeholder="Miles"
-                value={chge ? toValue : toValue * 0.621371}
-                onChange={onChange}
-                disabled={!chge}
-              />
-              <label htmlFor="miles">Miles</label>
-            </div>
-          </div>
-          <button onClick={reset}>Reset</button>
-          <button onClick={convertKMtoMiles}>
-            {chge ? "KM to Miles" : "Miles to KM"}
-          </button>
-        </div>
-      );
-    }
+    const MemorizeBtn = React.memo(Btn);
     function App() {
-      const [index, setIndex] = React.useState("ox");
-      const onSelect = (e) => {
-        setIndex(e.target.value);
+      const [value, setValue] = React.useState("Save Changes");
+      const changeValue = () => {
+        setValue("Revert Changes");
       };
-
       return (
         <div>
-          <h1>Super Converter</h1>
-          <select value={index} onChange={onSelect}>
-            <option value="ox">Please Select units</option>
-            <option value="0">Minutes & Hours</option>
-            <option value="1">Km & Miles</option>
-          </select>
-          <hr />
-          <div>
-            {index === "0" ? <MinutesToHours /> : null}
-            {index === "1" ? <KmToMiles /> : null}
-          </div>
+          <MemorizeBtn
+            btnTitle={value}
+            backColor="tomato"
+            onClick={changeValue}
+          />
+          <MemorizeBtn btnTitle="Confirm" backColor="#72C498" />
         </div>
       );
     }
