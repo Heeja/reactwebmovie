@@ -14,30 +14,117 @@
   ></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="text/babel">
-    const root = document.getElementById("root");
+    function MinutesToHours() {
+      const [amount, setAmount] = React.useState();
+      const [inverted, setInverted] = React.useState(false);
+      const onChange = (e) => {
+        setAmount(e.target.valueAsNumber);
+      };
+      const reset = () => setAmount(0);
+      const onFlip = () => {
+        reset();
+        setInverted((current) => !current);
+      };
+      return (
+        <div>
+          <h3>Minutes to Hours</h3>
+          <div>
+            <label htmlFor="amount">Minutes</label>
+            <input
+              value={inverted ? amount * 60 : amount}
+              id="minutes"
+              placeholder="Minutes"
+              type="number"
+              onChange={onChange}
+              disabled={inverted}
+            />
+          </div>
+          <div>
+            <label htmlFor="hours">Hours</label>
+            <input
+              value={inverted ? amount : Math.round(amount / 60)}
+              id="hours"
+              placeholder="Hours"
+              type="number"
+              onChange={onChange}
+              disabled={!inverted}
+            />
+          </div>
+          <button onClick={reset}>Reset</button>
+          <button onClick={onFlip}>{inverted ? "Turn back" : "Invert"}</button>
+        </div>
+      );
+    }
+    function KmToMiles() {
+      const [toValue, setTovalue] = React.useState();
+      const [chge, setChge] = React.useState(false);
 
-    function App() {
-      const [counter, setCounter] = React.useState(0);
-      const onClick = () => {
-        setCounter(counter + 1);
+      const onChange = (e) => {
+        setTovalue(e.target.valueAsNumber);
+      };
+      const reset = () => {
+        setTovalue(0);
+      };
+      const convertKMtoMiles = () => {
+        reset();
+        setChge(!chge);
       };
 
       return (
         <div>
-          <h2>Total Clicked: {counter}</h2>
-          <button
-            style={{
-              backgroundColor: "tomato",
-              border: "none",
-              borderRadius: "8px",
-            }}
-            onClick={onClick}
-          >
-            Click Me
+          <h3>Km to Miles</h3>
+          <div>
+            <div>
+              <input
+                type="number"
+                placeholder="Kilometer"
+                value={chge ? toValue * 1.609344 : toValue}
+                onChange={onChange}
+                disabled={chge}
+              />
+              <label htmlFor="km">KM</label>
+            </div>
+            <div>
+              <input
+                type="number"
+                placeholder="Miles"
+                value={chge ? toValue : toValue * 0.621371}
+                onChange={onChange}
+                disabled={!chge}
+              />
+              <label htmlFor="miles">Miles</label>
+            </div>
+          </div>
+          <button onClick={reset}>Reset</button>
+          <button onClick={convertKMtoMiles}>
+            {chge ? "KM to Miles" : "Miles to KM"}
           </button>
         </div>
       );
     }
+    function App() {
+      const [index, setIndex] = React.useState("ox");
+      const onSelect = (e) => {
+        setIndex(e.target.value);
+      };
+
+      return (
+        <div>
+          <h1>Super Converter</h1>
+          <select value={index} onChange={onSelect}>
+            <option value="ox">Please Select units</option>
+            <option value="0">Minutes & Hours</option>
+            <option value="1">Km & Miles</option>
+          </select>
+          <hr />
+          <div>
+            {index === "0" ? <MinutesToHours /> : null}
+            {index === "1" ? <KmToMiles /> : null}
+          </div>
+        </div>
+      );
+    }
+    const root = document.getElementById("root");
     ReactDOM.render(<App />, root);
   </script>
 </html>
