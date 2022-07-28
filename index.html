@@ -12,6 +12,7 @@
     src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
     crossorigin
   ></script>
+  <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="text/babel">
     function Btn({ btnTitle, backColor, onClick }) {
@@ -32,7 +33,19 @@
         </button>
       );
     }
+
+    // 컨포넌트가 상태를 바꾼다면 다시 render (아래 App을 render하고있다)
+    // App안에서 useState값이 변경되기 때문에 App은 다시 render되고, 변경되지 않은 부분까지 다시 render된다.
+    // React.memo는 변경되는 부분만 render될 수 있게 하는 기능을 가지고 있다.
     const MemorizeBtn = React.memo(Btn);
+
+    // props의 Type 명시(.type) 및 필수전달 여부(.isRequired)
+    Btn.propTypes = {
+      btnTitle: PropTypes.string.isRequired,
+      backColor: PropTypes.string.isRequired,
+      onClick: PropTypes.func,
+    };
+
     function App() {
       const [value, setValue] = React.useState("Save Changes");
       const changeValue = () => {
