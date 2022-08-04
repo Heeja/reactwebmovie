@@ -1,35 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [toDo, setTodo] = useState("");
-  const [toDos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [coins, setCoins] = useState([]);
+  const [numval, setNumval] = useState("");
+  const [chngUSD, setChgUSD] = useState(true);
 
-  const onChange = (e) => setTodo(e.target.value);
+  const numChange = (e) => {
+    setNumval(e.target.value);
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
-    if (toDo === "") {
-      return;
-    }
-    setTodo("");
-    setTodos((currentArray) => [toDo, ...currentArray]);
+    setChgUSD(false);
   };
+
+  useEffect(() => {
+    fetch("https://api.coinpaprika.com/v1/tickers")
+      .then((response) => response.json())
+      .then((json) => {
+        setCoins(json);
+        setLoading(false);
+      });
+  }, []);
+
+  console.log(coins);
 
   return (
     <div>
-      <h1>My To Dos ({toDos.length})</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          onChange={onChange}
-          value={toDo}
-          type="text"
-          placeholder="Write your to do"
-        />
-        <button>Add To Do</button>
-      </form>
-      <hr />
+      <h1>The Coin!</h1>
+      {loading ? (
+        <strong>Loading...</strong>
+      ) : (
+        <form onSubmit={onSubmit}>
+          <input
+            onChange={numChange}
+            value={numval}
+            type="number"
+            placeholder="$000"
+          />
+          <button>Enter</button>
+        </form>
+      )}
+      {chngUSD ? null : <p>{numval} USD로 살 수 있는 코인 수</p>}
       <ul>
-        {toDos.map((item, index) => (
-          <li key={index}>{item}</li>
+        {coins.map((coin, index) => (
+          <li key={index}>
+            {coin.name} {coin.symbol}:
+            {chngUSD ? (
+              <span> ${coin.quotes.USD.price.toFixed(3)}</span>
+            ) : (
+              <span>
+                {(coin.quotes.USD.price / numval).toFixed(3)} {coin.symbol}
+              </span>
+            )}
+          </li>
         ))}
       </ul>
     </div>
